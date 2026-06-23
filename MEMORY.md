@@ -1,0 +1,1 @@
+- [buck-mcp launch config](buck-mcp-launch-config.md) — say "bodhi" → connect/run the owner's Slack bot; full runbook + the registration (top-level mcpServers.bucky, bun.exe path, BUCK_MCP_HOME, watch-slack.ts)
