@@ -1,0 +1,25 @@
+---
+name: pistacia-projection-rebuild-runbook
+description: "How to rebuild Pistacia wallet projections (BUC-336 3PL-id heal) — critical, destructive, sandbox-first"
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: b358309a-4307-42c4-a471-adac67c7c0f4
+---
+
+**Critical/destructive op — always sandbox-first, prod only after sandbox verifies clean, every step approval-gated, run live with the owner/Faruk watching.** Goal of the rebuild (BUC-336): after the 3PL-id code fix deploys, historical projection rows still hold old Pistacia *account* ids; read-side resolve only heals a row when rewritten, so existing rows are healed only by a full truncate + checkpoint-reset + replay.
+
+Infra facts (verified 2026-06-26, sandbox):
+- Projections host = k8s deployment **`pistacia-projections`** (ns `cd-sandboxconfig`, ctx `pv-dev-aks`; 1 replica). Pause/resume = scale 1→0 then 0→1 (it re-subscribes from the reset checkpoint and replays `$all`).
+- Postgres DB **`pistacia`**, schema `public`, conf node `Pistacia.Projections.Host.Postgres`. ESDB conn `Pistacia.Denormalizer.Host`.
+- Checkpoint store = **`checkpoints`** table (`id VARCHAR PK` = projection name, `commit_position BIGINT`, `prepare_position BIGINT`). Reset = **DELETE the row OR SET it to (0,0)** — verified live 2026-06-26 that BOTH replay from the START (a missing checkpoint subscribes from the beginning, NOT the tail — the checkpoints were observed climbing 0→15.5bn while replaying). ⚠️⚠️ **The replay is SLOW** — wallet events are sparse across a large `$all` log (~179bn tail); after the DELETE+restart it took several minutes to write the first rows and was only ~8% in (ledger ckpt ~15.5bn) after ~10-20 min. **Do NOT mistake "0 rows after a few minutes" for failure** (I made exactly that mistake). Watch the *checkpoint position climbing* + row counts over time, not just an instant snapshot. To force a clean restart over partially-populated tables, re-TRUNCATE first then SET checkpoints to (0,0) with the pod at 0 replicas (a running pod overwrites the checkpoint on its next heartbeat; and replaying over existing ledger rows double-counts).
+- Projection names: wallet = `pistacia_wallet_ledger`, `pistacia_wallet_balance`, `pistacia_wallet_automatic_configuration`; payments = `payment_details`, `payment_summary`. **Reset ONLY the wallet rows** so payments don't replay.
+- Wallet tables: `wallet_ledger`, `wallet_balance`, `wallet_auto_topup_configurations`.
+- **TRUNCATE before replay is mandatory** — `WalletRepository.Add` is a bare INSERT, no ON CONFLICT → replaying over existing rows double-counts the ledger.
+- Pre-req gate: `Pistacia:Tenants` (SDK `TenantMappingOptions.SectionName`) must be **non-empty on the running projections host** — a fully-missing section does NOT crashloop (round-trip assert skips empties) but silently no-ops the heal. Canonical sandbox 3PL ids: PH `61d0547f-ec2b-4bd6-9cb5-5b74abaf3020`, PC `335cd10c-7b7e-479a-8fa8-d227569d6601`, PH_IE `c473ae46-ff8b-46b2-94fe-df5344c9426d`.
+
+Procedure (pod DOWN for the truncate+reset): 1) scale `pistacia-projections`→0 (wait until pod gone); 2) backup `CREATE TABLE wallet_*_bak AS SELECT *`; 3) **`TRUNCATE wallet_ledger, wallet_balance, wallet_auto_topup_configurations RESTART IDENTITY`** — each table has an identity PK `id = nextval('<t>_id_seq')`, and plain TRUNCATE does NOT reset the sequence (owner guidance 2026-06-26); 4) **reset checkpoints to 0, do NOT delete** — `UPDATE checkpoints SET commit_position=0, prepare_position=0 WHERE id IN ('pistacia_wallet_ledger','pistacia_wallet_balance','pistacia_wallet_automatic_configuration')` (owner: don't delete, just reset to 0; if a row is missing, INSERT at 0,0); 5) scale→1 (replay from position 0). Watch: this host has `serilog.consoleenabled=false`, so `k8s_logs` only shows DbUp — judge by **checkpoint commit_position climbing toward the $all tail + row counts**, and/or **Honeycomb** traces. Replay is **slow + non-linear**: ~15 min flat at 0, then 0→~72% over the next ~40 min, autotopup finishing well ahead of ledger/balance — don't extrapolate an early slow reading. Verify: row counts ~baseline, `tenant_id` are 3PL ids not account ids, balances reconcile (wallet_balance = SUM of wallet_ledger, no doubling), zero CRITICAL alerts. Rollback: scale 0, restore tables + checkpoint rows from `_bak`, investigate.
+
+The same pattern applies to the payments projection (PR #200, BUC-336 leg-2) — see [[buck-mcp-launch-config]] for the bodhi/bucky setup used to drive it.
+
+⚠️ **The "reset checkpoints to 0, don't delete" rule above is ONLY for `$all`/`FromAll` projections.** Once the wallet projections are narrowed to a category stream (`$ce-Pistacia_Wallet`, PR #215), the reset flips to **DELETE the checkpoint rows** — `FromStream.After` is exclusive and only a null/absent row → `Start`, so a row at 0 skips the stream's first event. Also: deploying #215 itself REQUIRES this reset+replay (an existing `$all`-position checkpoint ~179.8bn breaks a category sub). Full detail in [[esdb-projection-category-stream-pattern]].

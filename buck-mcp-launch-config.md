@@ -13,13 +13,13 @@ The Bucky MCP server (project at `C:\Users\arpan\repos\ph\buck-mcp`) was renamed
 2. **Command must be the absolute `bun.exe` path** `C:/Users/arpan/.bun/bin/bun.exe` — Claude Code spawns MCP servers without a shell, so bare `"bun"` won't resolve on Windows.
 3. **`BUCK_MCP_HOME` must be set to `C:/Users/arpan/.bucky`** — the renamed server defaults its home/settings dir to `~/.buck-mcp`, but the bodhi Slack-bridge config (`slackBridge` block) lives in the old `~/.bucky/settings.json`. Without the override it reports "Slack bridge is not configured."
 
-**The active registration is the TOP-LEVEL (user-scoped) `mcpServers.bucky` block in `C:/Users/arpan/.claude.json`** — NOT a project `.mcp.json` (there is none) and NOT the per-project `projects[...].mcpServers` copies (those are stale/unused). As of 2026-06-23 that block was missing both the absolute bun path and the env; the working form is:
+**The active registration is the TOP-LEVEL (user-scoped) server block in `C:/Users/arpan/.claude.json`** — NOT a project `.mcp.json` (there is none) and NOT the per-project `projects[...].mcpServers` copies (those are stale/unused, still keyed `bucky`). **2026-07-01: the registration key was renamed `bucky` → `buck`** (per the architect: buck-mcp = project name, `buck` = tool name, Bodhi = this bot's personality) — so tools are now `mcp__buck__*` (were `mcp__bucky__*`). `BUCK_MCP_HOME` stays `~/.bucky` (the slack-bridge `slackBridge` config still lives in the old `~/.bucky/settings.json`). Working form:
 ```json
-"bucky": { "command": "C:/Users/arpan/.bun/bin/bun.exe",
+"buck": { "command": "C:/Users/arpan/.bun/bin/bun.exe",
   "args": ["C:/Users/arpan/repos/ph/buck-mcp/src/buck-mcp.ts"],
   "env": { "BUCK_MCP_HOME": "C:/Users/arpan/.bucky" } }
 ```
-After editing `.claude.json` you MUST reconnect bucky (`/mcp` reconnect, or restart session) — config changes only take effect on relaunch; a fresh `start_session` creation time confirms the new process.
+After editing `.claude.json` you MUST reconnect (`/mcp` reconnect, or restart session) — config changes only take effect on relaunch; a fresh `start_session` creation time confirms the new process. **Reconnecting restarts the server and drops any running Slack bridge → re-arm Bodhi afterward (`start_session` + `slack_bridge_start`).**
 
 **"bodhi" = connect/run the owner's personal Slack bot** (buck-mcp slack-bridge component). Runbook when the user says "bodhi" / "start bodhi":
 1. `start_session { session_id }` (re-run after any reconnect — server restart drops the session).

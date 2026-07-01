@@ -1,1 +1,14 @@
+- [Owner identity](owner-identity.md) — the owner/primary user is Ankur (Rastogi), Slack U03NK1M7G6R; NOT "Ashish"
 - [buck-mcp launch config](buck-mcp-launch-config.md) — say "bodhi" → connect/run the owner's Slack bot; full runbook + the registration (top-level mcpServers.bucky, bun.exe path, BUCK_MCP_HOME, watch-slack.ts)
+- [Pachira SEON decline test email](pachira-seon-decline-test-email.md) — ashish.parcelhero@gmail.com triggers a SEON DECLINE in sandbox; sandbox doesn't actually mock SEON
+- [Pistacia projection rebuild runbook](pistacia-projection-rebuild-runbook.md) — critical destructive op: truncate wallet projections + reset checkpoints + replay (BUC-336 3PL heal); sandbox-first, infra specifics. Current shared version = v7 (DELETE checkpoints for the post-#215 category-stream world; v6 reset-to-0 was the $all era).
+- [ESDB projection category-stream pattern](esdb-projection-category-stream-pattern.md) — subscribe projections to $ce-<Category> not raw $all; .UsingCategoryStream(...); checkpoints stay global; PR #215 narrowed wallet projections
+- [Feedback: capture & reuse lessons](feedback-capture-and-reuse-lessons.md) — Ankur wants durable lessons from bodhi/infra sessions saved to memory and applied proactively next time
+- [Agent skills toolkit](agent-skills-toolkit.md) — Bucky's skills grouped by objective (code review, investigation, planning, impl, comms, memory, orchestration); pick the matching skill
+- [Feedback: separate reviewer](feedback-separate-reviewer.md) — never review code with the agent that wrote/recommended it; use a separate objective code-review agent
+- [Lesson: be patient with replays](lesson-be-patient-with-replays.md) — don't call a slow replay/migration failed from an early snapshot; watch the trend, verify before claiming a runbook bug
+- [Lazy wallet migration pollution test](lazy-wallet-migration-pollution-test.md) — how to test lazy wallet import on sandbox to verify pollution fix; mechanism, verification surface, cohort A+B sandbox accounts; Acacia wired via proconf_populate; flag key pistacia_enable_lazy_wallet_migration verified ON
+- [Bodhi orchestration playbook](bodhi-orchestration-playbook.md) — operating discipline for running Bodhi (watcher wraps bridge; claim→relaunch-before-processing→act; respond-on-origin; PR review + issue triage patterns) from Bucky's 2026-07-01 handoff
+- [Context-summary methodology](context-summary-methodology.md) — how to checkpoint before compaction (one versioned file, never overwrite, enough-beats-minimal, breadcrumb standing duties MUST-READ with re-bind action, ≥80%/≥90% thresholds, 9-section template)
+- [Feedback: Slack mention format](feedback-slack-mention-format.md) — use `<@USERID>` angle-bracket syntax for Slack mentions, not bare `@USERID`
+- [Emoji vocabulary](emoji-vocabulary.md) — CLI convention: 🟢🟡⚪ confidence (circles), 🟩🟦🟧🟥⬜ status (squares), ⚠️❌ℹ️💡⛔ callouts (pictograms); shape carries meaning, don't over-decorate
