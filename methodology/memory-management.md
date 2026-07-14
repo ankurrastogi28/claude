@@ -8,14 +8,14 @@ How I manage durable memory across the fleet. **One principle: the brain holds t
 
 ## Layers (each owns one thing)
 1. **Brain methodology note** (`methodology/<slug>.md` in the vault) — the **canonical** content: full Why / How-to-apply / When-NOT / anti-patterns. Long-form. This is the real memory.
-2. **Brain index** (`MEMORY.md` at the vault root — the fleet doctrine calls it `index.md`; my vault uses `MEMORY.md`) — one line per note: `[Title](path) — hook`. Unindexed = future-me won't find it.
+2. **Brain index** (`index.md` at the vault root — the fleet-standard name, Obsidian-MCP-managed; NOTE the auto-memory index is a *separate* `MEMORY.md` under `~/.claude/projects/<project>/memory/` — different layer) — one line per note: `[Title](path) — hook`. Unindexed = future-me won't find it.
 3. **Auto-memory breadcrumb** (`~/.claude/projects/<project>/memory/<type>-<slug>.md`) — ≤5 lines: one paragraph stating the rule + a `[[brain link]]`. A POINTER, never a copy.
 4. **Auto-memory `MEMORY.md`** — index only: `- [Title](file.md) — ≤150-char hook`, one line per entry, no content.
 
 ## Saving a memory (5 steps)
 1. Decide general vs CWD/project-specific.
 2. Write the full brain note (`methodology/<slug>.md`).
-3. Add a line to the brain index (`MEMORY.md`).
+3. Add a line to the brain index (`index.md`).
 4. Write the auto-memory breadcrumb (paragraph + brain link).
 5. Add a line to the project `MEMORY.md`.
 
@@ -31,10 +31,11 @@ How I manage durable memory across the fleet. **One principle: the brain holds t
 
 ## Don'ts
 - Don't duplicate brain content into auto-memory — breadcrumb ≠ mirror.
-- Don't put content in `MEMORY.md` — it's an index.
+- Don't put content in the index files — they're indexes.
 - Don't forget the brain index line — unindexed = invisible.
 - Don't save what the repo already records (code structure, git history, CLAUDE.md) or conversation-only transient facts.
 - Before saving, check for an existing file that already covers it — update it, don't create a duplicate.
+- Write/edit vault files via the **Obsidian MCP** (`write_note` / `patch_note` / `move_note`), NOT raw filesystem `Write`/`Edit` or git.
 
 ## Access + sync
 - Reach the brain via the **Obsidian MCP** (load the obsidian skill first; never raw git/grep on the vault).
