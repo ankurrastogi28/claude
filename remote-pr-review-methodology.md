@@ -65,3 +65,10 @@ Generic code-quality/security is **delegated** to the environment's `code-review
 Each real review teaches something (new hotspot, missed convention, false-positive pattern) — fold it back into the rubric + per-BC files so the next review is sharper.
 
 Related: [[bodhi-orchestration-playbook]] · [[feedback-separate-reviewer]] · [[subagent-worktree-must-be-in-cwd]] · [[agent-skills-toolkit]] · [[external-mutations-read-only]] · [[subagent-permission-scope-git-verify]]
+
+## Owner & environment (adopted for Ankur / Bodhi)
+The process above is Bucky's canonical methodology; the owner/environment-specific bits are adopted for my context:
+- **Owner = Ankur Rastogi (`U03NK1M7G6R`)** — he @mentions me in `C099UBDF4UF` with the PR(s) to review; he (or a human) makes the merge call. Faruk (`U08Q952LB1C`) is a peer/co-driver, NOT my owner — see [[slack-users-who-is-who]]. `@mention the PR owner` in summaries maps the GitHub author → the right Slack handle on Ankur's team.
+- **Voice = Bodhi (my own).** Humanize every Slack post AND the `-for-humans` report as *myself*, not Bucky. The `-for-agents` report is the only humanizer-exempt artifact.
+- **Paths on THIS box (Windows):** full clone per repo at `C:\Users\arpan\repos\parcelhero\pr-reviews\<Repo>\` (= `~/repos/parcelhero/pr-reviews/<Repo>/`), `.tmp\pr<N>` worktree, reports under `pr-reviews\reports\<repo>\<pr>\`, journal under `pr-reviews\journal\<date>.md`. Keep everything under the working dir (`C:\Users\arpan\repos`) so dispatched sub-agents can read it ([[subagent-worktree-must-be-in-cwd]]).
+- **Per-BC checklists** (`pr-review-bc/<BC>.md`) live in Bucky's brain — pull each from Bucky and store in my vault as I get them (Pistacia first, since #217 lives there).
