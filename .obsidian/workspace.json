@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "MEMORY.md",
+                "file": "Agents/Bodhi/external-mutations-read-only.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "MEMORY"
+              "title": "external-mutations-read-only"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "MEMORY.md",
+                "file": "Agents/Bodhi/external-mutations-read-only.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for MEMORY"
+              "title": "Backlinks for external-mutations-read-only"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "MEMORY.md",
+                "file": "Agents/Bodhi/external-mutations-read-only.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from MEMORY"
+              "title": "Outgoing links from external-mutations-read-only"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "MEMORY.md",
+                "file": "Agents/Bodhi/external-mutations-read-only.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of MEMORY"
+              "title": "Outline of external-mutations-read-only"
             }
           }
         ]
@@ -185,9 +185,10 @@
   },
   "active": "b5c5475b67c9fe85",
   "lastOpenFiles": [
+    "MEMORY.md.tmp.15872.bf166fc85698",
     "methodology/buck-sql-query-rules.md",
-    "owner-identity.md",
     "MEMORY.md",
+    "owner-identity.md",
     "README.md",
     "lesson-be-patient-with-replays.md",
     "Agents/Bodhi/external-mutations-read-only.md",
