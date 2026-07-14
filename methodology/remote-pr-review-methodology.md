@@ -47,7 +47,7 @@ Generic code-quality/security is **delegated** to the environment's `code-review
 2. **Regression / side-effect scan** — what breaks OUTSIDE the diff: event/contract ripple to appliers + projections + other-BC consumers; HTTP status-code contract; read-model/projection replay-safety; per-environment config parity; money math (truncation/rounding/VAT/sign).
 3. **Read the linked Linear ticket (MANDATORY)** — orchestrator does this first: acceptance criteria, required tests, deploy-coupling the code won't show ("ship behind flag X", "don't deploy in isolation", "depends on BC Y first"). Confirm the PR satisfies the criteria, not just "compiles". No ticket found = state it as a gap, not a pass.
 
-**Per-BC checklist** — run the matching list: **Pachira** (billing), **Pistacia** (payments), **Aspen** (account/identity/auth), **Moss** (edge gateway). Full detail in Bucky's `pr-review-bc/<BC>.md` (separate docs — I do NOT have these yet; pull the relevant one from Bucky, e.g. the Pistacia checklist for #217-type PRs).
+**Per-BC checklist** — run the matching list: **Pachira** (billing), **Pistacia** (payments), **Aspen** (account/identity/auth), **Moss** (edge gateway). Full detail in `pr-review-bc/<BC>.md` — **Pistacia captured** at [[pr-review-bc-pistacia]] (payments/projection/wallet hotspots); Pachira/Aspen/Moss still to pull from Bucky.
 
 ## Severity / verdict model (advisory)
 - **Blocking** — correctness/security/data-integrity defect to fix before merge.
