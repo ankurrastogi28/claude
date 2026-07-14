@@ -1,34 +1,67 @@
 ---
 name: remote-pr-review-methodology
-description: "Canonical how-to for a Bodhi Remote PR Review — read-only,
-  separate objective reviewer, evidence-based, advisory verdict in Slack.
-  Consolidates Bucky's guidance + Bodhi's #217 run."
+description: Canonical Remote PR Review methodology (Bucky's authoritative brain
+  version, captured verbatim-faithful for Bodhi) — on-demand advisory 2nd-pass
+  review from the GitHub Slack channel; read-only, separate reviewer + verifier,
+  two report files, per-BC rubric.
 metadata:
   node_type: memory
   type: reference
 ---
-Consolidated at Ankur's request (2026-07-14) from Bucky's guidance (handoffs 2026-06-29 / 07-01 / 07-08) + Bodhi's own PR #217 review run. This is the canonical how-to for a Bodhi Remote PR Review.
+Authoritative source: **Bucky's brain** — `Projects/Parcelhero/methodology/{remote-pr-review, pr-review-rubric}.md` + `pr-review-bc/{Pachira,Pistacia,Aspen,Moss}.md`. Captured faithfully for Bodhi 2026-07-14 at Ankur's request (must reproduce exactly). Adapt paths to this box under the working dir (`C:\Users\arpan\repos\...`, = `~/repos`).
 
-## What it is
-A **read-only, evidence-based** PR review run from the Slack bridge: read the PR + its ticket, review the diff with a **separate objective reviewer** (+ a verifier), and deliver an **advisory verdict in the Slack origin thread**. Never touch the GitHub side.
+## What
+On-demand **second-pass** code review of ParcelVision PRs, driven from the GitHub-notifications Slack channel (`C099UBDF4UF`). The owner @mentions the reviewer with PR links; the reviewer reviews each, verifies the findings, and posts a short humanized summary + the uploaded report file(s) on that PR's **"Pull request opened"** Slack thread. Verdicts are **advisory — a human merges** (never touch the GitHub side — see [[external-mutations-read-only]]).
 
-## Hard rules (non-negotiable)
-1. **Read-only on GitHub.** Never post reviews / approvals / comments / merges / labels / edits to the PR. `gh pr view/diff/list` (read) ONLY — never `gh pr review/comment/merge` or `gh api` POST/PATCH/PUT/DELETE. Deliver findings in Slack; a human pushes any GitHub action. An ambiguous nudge ("👆", "go ahead", even "approve it") is NOT authorization to mutate. See [[external-mutations-read-only]].
-2. **Separate objective reviewer.** The reviewer must NOT be the agent that wrote/recommended the code — brief a *fresh* agent (or the `code-review` skill) on the diff + rubric only; the author has already rationalised their choices and self-review rubber-stamps them. Small/trivial changes exempt. See [[feedback-separate-reviewer]].
+## Roles (never review inline in the orchestrator)
+- **Orchestrator** — reads the linked Linear ticket **FIRST**, briefs the reviewer, dispatches the reviewer sub-agent, runs verification, posts, and logs. Owns ALL Slack posting; never reviews inline.
+- **Reviewer sub-agent** — adds a worktree, reviews code-first (+ superpowers `requesting-code-review`), writes the humanized report, returns a summary + verdict + findings (**each with file:line AND the evidence/proof**), then removes its own worktree. Never posts to Slack.
+- **Verification sub-agent** (SEPARATE from the reviewer, and never the author — [[feedback-separate-reviewer]]) — runs superpowers `receiving-code-review` over the findings, **evidence-first**: verifies each claim against source rather than rubber-stamping. Orchestrator verifies itself only when a finding's evidence is weak/missing. Nothing is posted until findings are verified.
 
-## The flow
-1. **Read the ticket first** — understand intent + acceptance criteria before the diff.
-2. **Fetch the PR read-only** — `gh pr view <n>` (title/body/files/state), `gh pr diff <n>` (full diff), `gh pr diff <n> --name-only` (file list).
-3. **In-cwd worktree if sub-agents need the code** — sub-agent file tools are sandboxed to the session cwd (`C:\Users\arpan\repos`). Create the worktree INSIDE cwd: `git -C <mainrepo> worktree add --detach C:\Users\arpan\repos\.pr-review\<repo>-<pr> <headSha>`. A worktree under `~/tmp` is invisible to sub-agents (permission-denied on Read/Grep/Bash; only Glob works). See [[subagent-worktree-must-be-in-cwd]].
-4. **Review = reviewer + verifier.** A separate objective reviewer against the rubric (`code-review`; add `security-review` for auth/input/secret/injection); a verifier sub-agent checks the findings. **Orchestrator owns Slack posting** — sub-agents return findings, they don't post. (Note: in this Claude-Code harness, sub-agents can't run local git/Bash verification — do code/git verification in the main session; see [[subagent-permission-scope-git-verify]].)
-5. **Verify claims against the actual code + history — don't just read the diff.** Confirm a fix's assumptions against real code/history (on #217: diffed the event-schema git history to prove the legacy `CustomerId` field name matched, so old events would actually deserialize into the restored field). Actively hunt for GAPS beyond what the PR fixes — same-pattern siblings, edge cases, missing coverage (on #217 that surfaced the unfixed `WalletMigrated` NRE with the identical `e.Customer.Id` landmine). An objective reviewer finds gaps, not just confirmations.
-6. **Deliver the verdict in the Slack origin thread** — clear verdict (🟢 approve / approve-with-nits / 🟥 request-changes) + findings ranked by severity, each actionable, confidence-tagged. State plainly it's advisory and that nothing was posted to GitHub.
-7. **Self-clean** — `git worktree remove --force <path>` + `git worktree prune`. Sub-agents: named + background + retired.
+## Trigger
+On-demand only — owner @mentions in `C099UBDF4UF` with the PR numbers. No auto-pickup cron.
 
-## Skills to reach for
-`code-review` (structured review vs rubric, read-only, never auto-posts), `security-review`, `requesting-code-review` / `receiving-code-review`. Pick by objective. See [[agent-skills-toolkit]].
+## Workflow (7 steps)
+1. **Resolve the PR set** — `gh pr view <n> --repo ParcelVision/<Repo> --json number,state,title,isDraft,mergeable,headRefOid,baseRefName,additions,deletions,changedFiles`. Review in the order requested.
+2. **Read the linked Linear ticket FIRST** (+ parent/siblings) for acceptance criteria, required tests, and deploy-coupling; fold into the reviewer's brief. A `CONFLICTING` PR is still reviewed on its merits (log the conflict as "resolve before merge"). Advisory.
+3. **Worktree (read-only).** One **FULL clone per repo** at `~/repos/parcelhero/pr-reviews/<Repo>/` (full clone — NOT `--filter=blob:none`, so a needed blob is never lazily missing). Per PR:
+   - `git -C pr-reviews/<Repo> fetch origin '+refs/pull/<N>/head:refs/remotes/origin/pr/<N>'`
+   - `git -C pr-reviews/<Repo> worktree prune` then `worktree add .tmp/pr<N> origin/pr/<N>`
+   - Review inside `.tmp/pr<N>/` (`.tmp/` is git-ignored — throwaway scratch).
+   - Diff vs base: `git diff origin/<baseRefName>...origin/pr/<N>`. Never commit/push.
+   - When done, the reviewer removes its own worktree: `git worktree remove .tmp/pr<N> --force`. Self-cleaning → no cleanup cron, no merge-monitoring.
+   - (Harness note: sub-agent file tools are sandboxed to the session cwd; `~/repos/parcelhero/pr-reviews/...` is inside cwd, so fine — never put the worktree under `~/tmp`. See [[subagent-worktree-must-be-in-cwd]]. In THIS Claude-Code harness sub-agents can't run git/Bash — do the worktree/git in the main session, [[subagent-permission-scope-git-verify]].)
+4. **Review + verify.** Open the ACTUAL source — don't guess schemas/SQL/streams/keys from naming. Cover: correctness & domain faithfulness; risk (migrations, projection rebuilds, money/wallet, backward compat, silent-skip branches); tests; security/PII (hardcoded secret/webhook = blocking); maintainability (brief); merge-readiness. Every finding cites **file:line + evidence**. Verification sub-agent checks each against source before anything is posted.
+5. **Write TWO report files per version** (from the same verified facts):
+   - `<Repo>-<pr>-v<n>-for-humans.md` — full narrative, fully **humanized** (Bucky/Bodhi voice).
+   - `<Repo>-<pr>-v<n>-for-agents.md` — dense, structured, file:line-rich, action-ordered, **humanizer-exempt** (source of truth for precise file:line facts).
+   Reports live at `pr-reviews/reports/<repo>/<pr>/`; raw evidence under `.../<pr>/v<n>/`. If a review recommends a ticket change, also attach `<Repo>-<pr>-v<n>-<TICKET>-update.md`.
+6. **Post to the PR's "Pull request opened" thread** — (a) a humanized summary led by a one-line header (verdict + what the PR does), and (b) **upload BOTH report files**. **@mention the PR owner** (map GitHub author → Slack handle). `slack_bridge_file_upload` with the summary as `initial_comment` posts both in one call.
+7. **Log it** in `pr-reviews/journal/<date>.md`: PR, head SHA reviewed, report version, summary reply ts, uploaded file ids/permalinks. Track last-reviewed SHA so unchanged, un-prompted re-runs don't double-post.
 
-## Deliverable shape
-Verdict line → the fix in one line → ✅ what's verified correct (with the evidence) → ⚠️ findings (severity-ordered, each with a concrete rec) → net recommendation. Humanize as Bodhi; advisory only, human actions the GitHub side.
+## The rubric (what to check)
+Generic code-quality/security is **delegated** to the environment's `code-review` + `security-review` skills — don't re-list it. On top, every review adds:
+
+**Three cross-cutting dimensions (every review, every BC):**
+1. **Conventions / standards fit** — match the nearest existing exemplar; don't invent a new shape (business/money/auth logic at the right altitude; a new *versioned* event, not a mutated persisted one; use the BC's safe accessor).
+2. **Regression / side-effect scan** — what breaks OUTSIDE the diff: event/contract ripple to appliers + projections + other-BC consumers; HTTP status-code contract; read-model/projection replay-safety; per-environment config parity; money math (truncation/rounding/VAT/sign).
+3. **Read the linked Linear ticket (MANDATORY)** — orchestrator does this first: acceptance criteria, required tests, deploy-coupling the code won't show ("ship behind flag X", "don't deploy in isolation", "depends on BC Y first"). Confirm the PR satisfies the criteria, not just "compiles". No ticket found = state it as a gap, not a pass.
+
+**Per-BC checklist** — run the matching list: **Pachira** (billing), **Pistacia** (payments), **Aspen** (account/identity/auth), **Moss** (edge gateway). Full detail in Bucky's `pr-review-bc/<BC>.md` (separate docs — I do NOT have these yet; pull the relevant one from Bucky, e.g. the Pistacia checklist for #217-type PRs).
+
+## Severity / verdict model (advisory)
+- **Blocking** — correctness/security/data-integrity defect to fix before merge.
+- **Non-blocking (nit)** — style/naming/minor convention drift.
+- **`deploy-blocker`** — code is correct but shipping it *as-is, alone* is unsafe (flag on, migration first, depends on BC Y). Usually comes from the ticket. **Before tagging a dependency as a deploy-blocker, check the base branch** — if the prerequisite is already on `origin/<base>`, the PR merely depends on already-shipped work (NOT a blocker): `git cat-file -e origin/<base>:<path>`.
+- **Verdict:** `approve` / `approve-with-nits` / `request-changes` (needs ≥1 blocking **code** finding). A `deploy-blocker` does **NOT** by itself force `request-changes` — surface it as a prominent separate flag and let the human decide merge/deploy ordering.
+
+## Guardrails
+- Read-only on the repos: no commits, no pushes. Read-only on GitHub entirely — never post review/approve/comment/merge; a human makes the merge call ([[external-mutations-read-only]]).
+- **Humanize every posted message and the -for-humans report** (my own voice) even when an agent will ingest it; the `-for-agents` file is the only humanizer-exempt artifact.
+- Orchestrator owns all Slack posting and never reviews inline; sub-agents write the report + summary, they don't post.
+- Factual, no speculation dressed as fact; every summary @mentions the PR owner; a human makes the merge call.
+
+## Living document
+Each real review teaches something (new hotspot, missed convention, false-positive pattern) — fold it back into the rubric + per-BC files so the next review is sharper.
 
 Related: [[bodhi-orchestration-playbook]] · [[feedback-separate-reviewer]] · [[subagent-worktree-must-be-in-cwd]] · [[agent-skills-toolkit]] · [[external-mutations-read-only]] · [[subagent-permission-scope-git-verify]]
