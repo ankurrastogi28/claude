@@ -13,3 +13,4 @@
 - [Feedback: Slack mention format](feedback-slack-mention-format.md) — use `<@USERID>` angle-bracket syntax for Slack mentions, not bare `@USERID`
 - [Emoji vocabulary](emoji-vocabulary.md) — CLI convention: 🟢🟡⚪ confidence (circles), 🟩🟦🟧🟥⬜ status (squares), ⚠️❌ℹ️💡⛔ callouts (pictograms); shape carries meaning, don't over-decorate
 - [Remote PR Review methodology](methodology/remote-pr-review-methodology.md) — canonical Bodhi PR-review how-to (+ per-BC checklists under methodology/pr-review-bc/, Pistacia captured): read-only on GitHub, separate objective reviewer (+verifier), read-ticket-first, gh read-only fetch, in-cwd worktree, verify vs real code/history + hunt gaps, advisory verdict in the Slack thread, self-clean
+- [Wallet pollution check](methodology/wallet-pollution-check.md) — detect wallet-projection pollution via NOT-IN-known-3PL-ids query; current prod 3PL ids + old account id to watch; ⚠️ re-check ≈2026-07-28 (Faruk)
