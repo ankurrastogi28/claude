@@ -40,7 +40,7 @@ On-demand only — owner @mentions in `C099UBDF4UF` with the PR numbers. No auto
 7. **Log it** in `pr-reviews/journal/<date>.md`: PR, head SHA reviewed, report version, summary reply ts, uploaded file ids/permalinks. Track last-reviewed SHA so unchanged, un-prompted re-runs don't double-post.
 
 ## The rubric (what to check)
-Generic code-quality/security is **delegated** to the environment's `code-review` + `security-review` skills — don't re-list it. On top, every review adds:
+**Baseline (run first, every PR):** the project-agnostic 10-point [[generic-pr-review-checklist]] — scope · correctness · tests · error-handling · security · readability/conventions · performance · regression/blast-radius · docs · advisory-verdict (Faruk-directed 2026-07-20). Generic code-quality/security can also lean on the environment's `code-review` + `security-review` skills — don't re-list it. On top of that baseline, every review adds:
 
 **Three cross-cutting dimensions (every review, every BC):**
 1. **Conventions / standards fit** — match the nearest existing exemplar; don't invent a new shape (business/money/auth logic at the right altitude; a new *versioned* event, not a mutated persisted one; use the BC's safe accessor).
