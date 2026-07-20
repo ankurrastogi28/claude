@@ -19,7 +19,8 @@ metadata:
 7. **Performance** — no obvious N+1, unbounded query/loop, or needless work on hot paths.
 8. **Regression / blast-radius** — impact outside the diff; backward-compatible API/contract/schema changes; migrations forward-safe; config/env parity.
 9. **Docs** — README/API/config updated where the change warrants.
-10. **Verdict (advisory — a human merges)** — `approve` / `approve-with-nits` / `request-changes`; every finding gets file:line + evidence + severity (blocking vs nit). And confirm the linked ticket's acceptance criteria are actually met, not just "it compiles".
+10. **Pipeline / CI (gating — added 2026-07-20)** — check the PR's build/CI status; it's part of our GitHub PR merge checks, so a **red pipeline blocks `approve`**. State whether the verdict is a *static code-read* or *build/CI-verified* — never let `approve` imply green CI. When the repo is cloned locally, prefer actually running the build/tests before approving.
+11. **Verdict (advisory — a human merges)** — `approve` / `approve-with-nits` / `request-changes`; every finding gets file:line + evidence + severity (blocking vs nit). And confirm the linked ticket's acceptance criteria are actually met, not just "it compiles".
 
 ## How it fits the wider methodology
 - This is the **baseline layer**. On top of it, every ParcelVision review still adds the 3 cross-cutting dimensions and the matching per-BC checklist — see [[remote-pr-review-methodology]] and the per-BC notes (e.g. [[pr-review-bc-pistacia]]).
