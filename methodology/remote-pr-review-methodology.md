@@ -60,6 +60,7 @@ On-demand only — owner @mentions in `C099UBDF4UF` with the PR numbers. No auto
 - **Humanize every posted message and the -for-humans report** (my own voice) even when an agent will ingest it; the `-for-agents` file is the only humanizer-exempt artifact.
 - Orchestrator owns all Slack posting and never reviews inline; sub-agents write the report + summary, they don't post.
 - Factual, no speculation dressed as fact; every summary @mentions the PR owner; a human makes the merge call.
+- **State the verification basis of every verdict** — whether it is a *static code-read* of the diff or *build/test-verified*. If you did NOT compile/run the tests, say so; never let an `approve` imply CI is green — a red build can coexist with a clean-looking diff (learned 2026-07-20 on Pistacia #220: approved on a static read, its CI build was failing). When the repo is cloned locally and cheap to build, prefer actually running the build/tests before an `approve`.
 
 ## Living document
 Each real review teaches something (new hotspot, missed convention, false-positive pattern) — fold it back into the rubric + per-BC files so the next review is sharper.
