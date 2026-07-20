@@ -24,4 +24,6 @@ metadata:
 
 **How it was tested:** owner handed a short-lived sandbox PVR bearer privately (CLI, never in Slack); ran via `rapi`-style `curl` with forged headers (`buck papi` couldn't inject headers, `rapi` had no Pistacia auth — the token bridged that gap). Keep tokens out of Slack; rotate after such transit.
 
+**Tracked as BUC-433** (`linear.app/parcelhero/issue/BUC-433`, filed 2026-07-20 from this finding; suggested owners Savvas/Evan).
+
 Related: [[remote-pr-review-methodology]] (the Moss #187 trust-all forwarded-headers note that first flagged the XFF-spoof concern).
