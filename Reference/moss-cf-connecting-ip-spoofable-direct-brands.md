@@ -26,4 +26,6 @@ metadata:
 
 **Tracked as BUC-433** (`linear.app/parcelhero/issue/BUC-433`, filed 2026-07-20 from this finding; suggested owners Savvas/Evan).
 
+**Do NOT advise removing the `/v1/client-info` probe / churning the PoC yet** — owner (Ankur, CLI 2026-07-20) is keeping it as the live BUC-433 test surface and will remove it himself once testing is complete. Supersedes the earlier "churn the PoC with BUC-412" step for now.
+
 Related: [[remote-pr-review-methodology]] (the Moss #187 trust-all forwarded-headers note that first flagged the XFF-spoof concern).
