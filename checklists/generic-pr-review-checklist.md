@@ -35,3 +35,8 @@ When reviewing PRs produced with AI-agent workflows, **scan for committed workin
 - **`docs/superpowers/` — the superpowers skill namespace** (`plans/*.md` = agent implementation plans, `specs/*.md` = design/edge-case docs). Agent working artifacts, NOT production docs — flag like `.tmp`. The `plans/` doc is always scratch; `specs/` may have design value but belong in a real docs path, not the skill namespace.
 - Check: `git ls-tree -r origin/pr/<N> | grep -E '^\.tmp/|docs/superpowers/'`; confirm not on `origin/main` (PR-introduced) and gitignored.
 - **Lesson:** on #219 I read the `docs/superpowers/specs/` files as legitimate spec evidence across v3/v4 instead of flagging the whole tree as committed scratch — Faruk caught it. Fix = `git rm -r` + gitignore `docs/superpowers/` (ideally global gitignore).
+
+## Addendum — new type/exception names must match the sibling convention (lesson 2026-07-21, Pistacia #219)
+Under item 6 (Readability & conventions) / the "match the nearest exemplar" cross-cutting dim: **when a PR adds new exception/DTO/type classes, diff their names against the existing siblings in the same folder.** A PR that adds two classes in the same namespace with *different* shapes is introducing the inconsistency itself.
+- Concrete miss on #219: PR added `CardNotFoundException` + `CardDeletedException` (Card-prefix) alongside `ExpiredCardException` + `AmexCardException` (descriptor-then-`CardException`). Faruk caught the split; I'd passed it in v3/v4. Standardise on one shape (here the `Card…` prefix → `CardExpiredException`, `CardAmexException`).
+- Check: `ls src/**/Exceptions/` (or the relevant type folder) and eyeball the naming pattern; flag any new class that doesn't match the dominant sibling shape.
