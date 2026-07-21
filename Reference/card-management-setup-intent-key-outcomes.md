@@ -38,5 +38,6 @@ Full card-management workflow moves to **Stripe setup intents** — replacing th
 - Don't confuse the agent — ask it to DISCOVER possible combinations of cases rather than prescribe.
 - "Just show the DTO model."
 - Force Stripe-side combinations of different situations (Ankur 👍'd).
+- **Clarified 2026-07-21 (to me directly):** the intended workflow is — Ankur shows me the DTO, reminds me of Stripe's setup-intent + mandate concepts, then forces me to FIND the case combinations myself (e.g. card saved without setup intent · setup intent saved with no mandate · all saved but card expired AND it was the default card · …) so every combination is handled and addressed in the code. When the DTO arrives, run this discovery exercise exhaustively — enumerate the full state matrix (card × setup-intent × mandate × expired × default × deleted/re-added), not just the listed examples.
 
 Related: [[pr-review-bc-pistacia]] · [[remote-pr-review-methodology]] · [[generic-pr-review-checklist]]
