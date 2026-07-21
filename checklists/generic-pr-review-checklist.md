@@ -34,6 +34,12 @@ When reviewing PRs produced with AI-agent workflows, **scan for committed workin
 - `.tmp/` scratch (build/test-run captures, logs) — often multi-MB; should be gitignored.
 - **`docs/superpowers/` — the superpowers skill namespace** (`plans/*.md` = agent implementation plans, `specs/*.md` = design/edge-case docs). Agent working artifacts, NOT production docs — flag like `.tmp`. The `plans/` doc is always scratch; `specs/` may have design value but belong in a real docs path, not the skill namespace.
 - Check: `git ls-tree -r origin/pr/<N> | grep -E '^\.tmp/|docs/superpowers/'`; confirm not on `origin/main` (PR-introduced) and gitignored.
+
+## Addendum — local verification must be build + FULL test suite (standing rule, Faruk 2026-07-21, Pistacia #219)
+Before calling any change "green / safe to push", **build the full solution AND run the FULL test suite locally — unit AND integration — not just the changed/unit tests.** A rename or contract change can break a *pre-existing* test elsewhere that a unit-only run never touches.
+- Concrete miss on #219: the amex error message was generalised (`"American Express cards are not accepted."` → `"Card brand amex is not supported."`); a pre-existing **integration** test `CreatePaymentTests.Create_Returns400_WhenPaymentIsCreatedWithAmex:290` still asserted the old string. My local run was build + unit only; Neha ran only the *new* integration tests. Neither ran the full integration suite → it slipped to CI red.
+- **If the integration suite can't be run locally** (needs infra/app-host/Stripe-test-env), say so explicitly and mark the verdict **"unit-verified, integration UNVERIFIED — pending CI"** — never imply green off a unit-only pass. Don't over-lean to "expect green."
+- Ties into checklist item 10 (CI gating): a green *local unit* run is NOT a green CI.
 - **Lesson:** on #219 I read the `docs/superpowers/specs/` files as legitimate spec evidence across v3/v4 instead of flagging the whole tree as committed scratch — Faruk caught it. Fix = `git rm -r` + gitignore `docs/superpowers/` (ideally global gitignore).
 
 ## Addendum — new type/exception names must match the sibling convention (lesson 2026-07-21, Pistacia #219)
