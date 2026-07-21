@@ -28,3 +28,10 @@ metadata:
 - Advisory only — a human merges; never mutate GitHub ([[external-mutations-read-only]]).
 
 Related: [[remote-pr-review-methodology]] · [[bodhi-orchestration-playbook]] · [[feedback-separate-reviewer]]
+
+## Addendum — committed agent-scratch artifacts (lesson 2026-07-21, Pistacia #219)
+When reviewing PRs produced with AI-agent workflows, **scan for committed working/scratch material** as part of item 1 (Scope) / item 6 (Readability):
+- `.tmp/` scratch (build/test-run captures, logs) — often multi-MB; should be gitignored.
+- **`docs/superpowers/` — the superpowers skill namespace** (`plans/*.md` = agent implementation plans, `specs/*.md` = design/edge-case docs). Agent working artifacts, NOT production docs — flag like `.tmp`. The `plans/` doc is always scratch; `specs/` may have design value but belong in a real docs path, not the skill namespace.
+- Check: `git ls-tree -r origin/pr/<N> | grep -E '^\.tmp/|docs/superpowers/'`; confirm not on `origin/main` (PR-introduced) and gitignored.
+- **Lesson:** on #219 I read the `docs/superpowers/specs/` files as legitimate spec evidence across v3/v4 instead of flagging the whole tree as committed scratch — Faruk caught it. Fix = `git rm -r` + gitignore `docs/superpowers/` (ideally global gitignore).
