@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "checklists/pr-review-rubric-generic.md",
+                "file": "Reference/stripe-subscriptions-poc.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "pr-review-rubric-generic"
+              "title": "stripe-subscriptions-poc"
             }
           }
         ]
@@ -41,7 +41,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -78,7 +80,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 494.29998779296875
   },
   "right": {
     "id": "7df826325abf7dcc",
@@ -185,13 +187,17 @@
   },
   "active": "b5c5475b67c9fe85",
   "lastOpenFiles": [
-    "checklists/generic-pr-review-checklist.md",
+    "Reference/card-management-setup-intent-key-outcomes.md",
+    "Reference/moss-cf-connecting-ip-spoofable-direct-brands.md",
+    "Reference/stripe-subscriptions-poc.md",
+    "Reference/session-history-digest-2026-06-to-07.md",
+    "methodology/remote-pr-review-methodology.md",
     "checklists/pr-review-rubric-generic.md",
+    "checklists/generic-pr-review-checklist.md",
     "methodology/code-review-menu-generic.md",
     "methodology/sub-agents/sub-agent-investigation.md",
     "methodology/sub-agents/sub-agent-efficiency.md",
     "methodology/memory-management.md",
-    "methodology/remote-pr-review-methodology.md",
     "methodology/sub-agents",
     "methodology/buck-sql-query-rules.md",
     "index.md",
