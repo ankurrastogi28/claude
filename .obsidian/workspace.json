@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "checklists/generic-pr-review-checklist.md",
+                "file": "checklists/pr-review-rubric-generic.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "generic-pr-review-checklist"
+              "title": "pr-review-rubric-generic"
             }
           }
         ]
@@ -185,17 +185,19 @@
   },
   "active": "b5c5475b67c9fe85",
   "lastOpenFiles": [
-    "methodology/code-review-menu-generic.md",
+    "checklists/generic-pr-review-checklist.md",
     "checklists/pr-review-rubric-generic.md",
-    "methodology/sub-agent-efficiency.md",
-    "index.md",
-    "methodology/investigation-workspace-layout.md",
-    "methodology/sub-agent-investigation.md",
-    "2026-07-20.md",
-    "Untitled.canvas",
+    "methodology/code-review-menu-generic.md",
+    "methodology/sub-agents/sub-agent-investigation.md",
+    "methodology/sub-agents/sub-agent-efficiency.md",
     "methodology/memory-management.md",
     "methodology/remote-pr-review-methodology.md",
+    "methodology/sub-agents",
     "methodology/buck-sql-query-rules.md",
+    "index.md",
+    "methodology/investigation-workspace-layout.md",
+    "2026-07-20.md",
+    "Untitled.canvas",
     "context-summary-methodology.md",
     "emoji-vocabulary.md",
     "owner-identity.md",
