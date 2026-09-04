@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Reference/stripe-subscriptions-poc.md",
+                "file": "emoji-vocabulary.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "stripe-subscriptions-poc"
+              "title": "emoji-vocabulary"
             }
           }
         ]
@@ -187,14 +187,14 @@
   },
   "active": "b5c5475b67c9fe85",
   "lastOpenFiles": [
+    "methodology/code-review-menu-generic.md",
+    "methodology/remote-pr-review-methodology.md",
+    "Reference/stripe-subscriptions-poc.md",
     "Reference/card-management-setup-intent-key-outcomes.md",
     "Reference/moss-cf-connecting-ip-spoofable-direct-brands.md",
-    "Reference/stripe-subscriptions-poc.md",
     "Reference/session-history-digest-2026-06-to-07.md",
-    "methodology/remote-pr-review-methodology.md",
     "checklists/pr-review-rubric-generic.md",
     "checklists/generic-pr-review-checklist.md",
-    "methodology/code-review-menu-generic.md",
     "methodology/sub-agents/sub-agent-investigation.md",
     "methodology/sub-agents/sub-agent-efficiency.md",
     "methodology/memory-management.md",
